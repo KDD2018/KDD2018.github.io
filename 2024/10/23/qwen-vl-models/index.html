@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha256-5eIC48iZUHmSlSUz9XtjRyK2mzQkHScZY1WdMaoz74E=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.21.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="Qwen-VL 学习笔记A Versatile Vision-Language Model for Understanding, Localization, Text Reading, and Beyond Code: https:&#x2F;&#x2F;github.com&#x2F;QwenLM&#x2F;Qwen-VL 研究动机当前多模态大模型在现实世界中视觉任务上的表现具有相当大的潜力，但缺乏细粒度的视觉理解，如视觉定位、文本阅">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Qwen-VL与Qwen2-VL">
+<meta property="og:url" content="https://example.com/2024/10/23/qwen-vl-models/index.html">
+<meta property="og:site_name" content="LLM">
+<meta property="og:description" content="Qwen-VL 学习笔记A Versatile Vision-Language Model for Understanding, Localization, Text Reading, and Beyond Code: https:&#x2F;&#x2F;github.com&#x2F;QwenLM&#x2F;Qwen-VL 研究动机当前多模态大模型在现实世界中视觉任务上的表现具有相当大的潜力，但缺乏细粒度的视觉理解，如视觉定位、文本阅">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://example.com/2024/10/23/qwen-vl-models/Qwen-vl%20Arch.png">
+<meta property="og:image" content="https://example.com/2024/10/23/qwen-vl-models/Multi-Task%20DataFormat.png">
+<meta property="og:image" content="https://example.com/2024/10/23/qwen-vl-models/SFT-DataFormat.png">
+<meta property="article:published_time" content="2024-10-23T12:23:42.000Z">
+<meta property="article:modified_time" content="2024-11-01T12:19:47.438Z">
+<meta property="article:author" content="CJ WU">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://example.com/2024/10/23/qwen-vl-models/Qwen-vl%20Arch.png">
+
+
+<link rel="canonical" href="https://example.com/2024/10/23/qwen-vl-models/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://example.com/2024/10/23/qwen-vl-models/","path":"2024/10/23/qwen-vl-models/","title":"Qwen-VL与Qwen2-VL"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Qwen-VL与Qwen2-VL | LLM</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">LLM</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Qwen-VL-%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0"><span class="nav-number">1.</span> <span class="nav-text">Qwen-VL 学习笔记</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A0%94%E7%A9%B6%E5%8A%A8%E6%9C%BA"><span class="nav-number">1.1.</span> <span class="nav-text">研究动机</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BB%E8%A6%81%E8%B4%A1%E7%8C%AE"><span class="nav-number">1.2.</span> <span class="nav-text">主要贡献</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A8%A1%E5%9E%8B%E6%9E%B6%E6%9E%84"><span class="nav-number">1.3.</span> <span class="nav-text">模型架构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%AD%E7%BB%83%E7%AD%96%E7%95%A5%E4%B8%8E%E8%AE%AD%E7%BB%83%E6%95%B0%E6%8D%AE"><span class="nav-number">1.4.</span> <span class="nav-text">训练策略与训练数据</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Pre-training"><span class="nav-number">1.4.1.</span> <span class="nav-text">Pre-training</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Multi-task-Pre-training"><span class="nav-number">1.4.2.</span> <span class="nav-text">Multi-task Pre-training</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Supervised-Fine-tuning"><span class="nav-number">1.4.3.</span> <span class="nav-text">Supervised Fine-tuning</span></a></li></ol></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">CJ WU</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">1</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://example.com/2024/10/23/qwen-vl-models/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="CJ WU">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LLM">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Qwen-VL与Qwen2-VL | LLM">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Qwen-VL与Qwen2-VL
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2024-10-23 20:23:42" itemprop="dateCreated datePublished" datetime="2024-10-23T20:23:42+08:00">2024-10-23</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2024-11-01 20:19:47" itemprop="dateModified" datetime="2024-11-01T20:19:47+08:00">2024-11-01</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h2 id="Qwen-VL-学习笔记"><a href="#Qwen-VL-学习笔记" class="headerlink" title="Qwen-VL 学习笔记"></a>Qwen-VL 学习笔记</h2><p>A Versatile Vision-Language Model for Understanding, Localization, Text Reading, and Beyond</p>
+<p>Code: <a target="_blank" rel="noopener" href="https://github.com/QwenLM/Qwen-VL">https://github.com/QwenLM/Qwen-VL</a></p>
+<h3 id="研究动机"><a href="#研究动机" class="headerlink" title="研究动机"></a>研究动机</h3><p>当前多模态大模型在现实世界中视觉任务上的表现具有相当大的潜力，但缺乏细粒度的视觉理解，如视觉定位、文本阅读。Qwen-VL系列适用于包括但不限于视觉理解、定位、文本阅读等多任务场景。</p>
+<h3 id="主要贡献"><a href="#主要贡献" class="headerlink" title="主要贡献"></a>主要贡献</h3><ol>
+<li><p>支持多语言指令，主要是英语和中文</p>
+</li>
+<li><p>支持输入多张图片</p>
+</li>
+<li><p>支持更细粒度的视觉理解，更好的视觉定位能力、文本阅读、文本问答、更细粒度的对话性能。</p>
+</li>
+</ol>
+<h3 id="模型架构"><a href="#模型架构" class="headerlink" title="模型架构"></a>模型架构</h3><p>Qwen-Vl模型架构包括三部分：</p>
+<ol>
+<li><p>大语言模型（QwenLM）：Qwen-7B作为基础模型。</p>
+</li>
+<li><p>视觉编码器（Visual Encoder）: Vit架构，使用的是Openclip’s ViT-bigG，训练、推理阶段将图像转成固定尺寸，生成patch_size为14的patches。</p>
+</li>
+<li><p>位置感知的视觉语言适配器（Position-aware Vision-Language Adapter）：CrossAttn，一个单层的交叉注意力模块，该模块接收视觉编码器提取的视觉特征和可学习的查询嵌入。这里引用的是2D绝对位置编码。将视觉编码器提取的视觉特征压缩到长度为256的序列，以缓解图像特征序列过长引起的效率问题。</p>
+</li>
+</ol>
+<p>大语言模型参数7.7B，视觉编码器参数1.9B，视觉语言适配器参数0.08B，Qwen-Vl参数量总共是9.6B。</p>
+<p><img src="/2024/10/23/qwen-vl-models/Qwen-vl%20Arch.png" alt="Qwen-VL Model Architecture"></p>
+<h3 id="训练策略与训练数据"><a href="#训练策略与训练数据" class="headerlink" title="训练策略与训练数据"></a>训练策略与训练数据</h3><p>三阶段训练：两阶段预训练，一阶段指令微调</p>
+<h4 id="Pre-training"><a href="#Pre-training" class="headerlink" title="Pre-training"></a>Pre-training</h4><p>冻住QwenLM，仅优化训练视觉编码器和视觉语言适配器，该阶段训练目标是最小化文本token的交叉熵损失，优化器使用的是AdamW，优化器参数是$\beta_1$=0.9， $\beta_2$=0.98，eps=$1e^{-6}$。<br>学习率使用余弦衰减策略，衰减权重为0.05，最大学习率为$2e{-4}$，最小学习率为$1e{-6}$，线性warm-up500步，梯度裁剪系数为1，梯度累积步数为6。</p>
+<p>图像输入尺寸为224×224，视觉编码器的序列长度为256，QwenLM的序列长度为512，可学习的查询嵌入为256，对于视觉编码器的学习率，使用的是衰减因子为0.95的逐层衰减的学习策略</p>
+<p>该阶段使用的训练数据是1.5B的图文对，包括LAION-en，LAION-COCO，DataComp，Coyo, SBU, COCO Caption, LAION-zh等以及内部数据。</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th style="text-align:center">Language</th>
+<th style="text-align:center">Dataset</th>
+<th style="text-align:center">Original</th>
+<th style="text-align:center">Cleaned</th>
+<th style="text-align:center">Remaining%</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">English</td>
+<td style="text-align:center">LAION-en</td>
+<td style="text-align:center">2B</td>
+<td style="text-align:center">280M</td>
+<td style="text-align:center">14%</td>
+</tr>
+<tr>
+<td style="text-align:center"></td>
+<td style="text-align:center">LAION-COCO</td>
+<td style="text-align:center">600M</td>
+<td style="text-align:center">300M</td>
+<td style="text-align:center">50%</td>
+</tr>
+<tr>
+<td style="text-align:center"></td>
+<td style="text-align:center">DataComp</td>
+<td style="text-align:center">1.4B</td>
+<td style="text-align:center">300M</td>
+<td style="text-align:center">21%</td>
+</tr>
+<tr>
+<td style="text-align:center"></td>
+<td style="text-align:center">Coyo</td>
+<td style="text-align:center">700M</td>
+<td style="text-align:center">200M</td>
+<td style="text-align:center">28%</td>
+</tr>
+<tr>
+<td style="text-align:center"></td>
+<td style="text-align:center">CC12M</td>
+<td style="text-align:center">12M</td>
+<td style="text-align:center">8M</td>
+<td style="text-align:center">66%</td>
+</tr>
+<tr>
+<td style="text-align:center"></td>
+<td style="text-align:center">CC3M</td>
+<td style="text-align:center">3M</td>
+<td style="text-align:center">3M</td>
+<td style="text-align:center">100%</td>
+</tr>
+<tr>
+<td style="text-align:center"></td>
+<td style="text-align:center">SBU</td>
+<td style="text-align:center">1M</td>
+<td style="text-align:center">0.8M</td>
+<td style="text-align:center">80%</td>
+</tr>
+<tr>
+<td style="text-align:center"></td>
+<td style="text-align:center">COCO Caption</td>
+<td style="text-align:center">0.6M</td>
+<td style="text-align:center">0.6M</td>
+<td style="text-align:center">100%</td>
+</tr>
+<tr>
+<td style="text-align:center">Chinese</td>
+<td style="text-align:center">LAION-zh</td>
+<td style="text-align:center">108M</td>
+<td style="text-align:center">105M</td>
+<td style="text-align:center">97%</td>
+</tr>
+<tr>
+<td style="text-align:center"></td>
+<td style="text-align:center">In-house Data</td>
+<td style="text-align:center">220M</td>
+<td style="text-align:center">220M</td>
+<td style="text-align:center">100%</td>
+</tr>
+<tr>
+<td style="text-align:center"></td>
+<td style="text-align:center">Total</td>
+<td style="text-align:center">5B</td>
+<td style="text-align:center">1.4B</td>
+<td style="text-align:center">28%</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h4 id="Multi-task-Pre-training"><a href="#Multi-task-Pre-training" class="headerlink" title="Multi-task Pre-training"></a>Multi-task Pre-training</h4><p>解冻Qwen-LM，训练整个模型的参数，训练目标是最小化文本token交叉熵损失，优化器及参数、学习率策略同第一阶段，但最大、最小学习率分别为$5e^{-5}$，$1e^{-5}$，梯度累积步数为8。<br>对于ViT和LLM使用了模型并行训练技术。<br>视觉编码器的图像输入尺寸扩大至448×448，视觉编码器的序列长度为1024，QwenLM的序列长度为2048，可学习的查询嵌入同一阶段。</p>
+<p>该阶段使用了7种任务场景下的数据集， 详情见下表。</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>Task</th>
+<th>#Samples</th>
+<th>Dataset</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Captioning</td>
+<td>19.7M</td>
+<td>LAION-en &amp; zh, DataComp, Coyo, CC12M &amp; 3M, SBU,COCO, In-house Data</td>
+</tr>
+<tr>
+<td>VQA</td>
+<td>3.6M</td>
+<td>GQA, VGQA, VQAv2, DVQA, OCR-VQA, DocVQA,TextVQA, ChartQA, AI2D</td>
+</tr>
+<tr>
+<td>Grounding2</td>
+<td>3.5M</td>
+<td>GRIT</td>
+</tr>
+<tr>
+<td>Ref Grounding</td>
+<td>8.7M</td>
+<td>GRIT, Visual Genome, RefCOCO, RefCOCO+, RefCOCOg</td>
+</tr>
+<tr>
+<td>Grounded Cap.</td>
+<td>8.7M</td>
+<td>GRIT, Visual Genome, RefCOCO, RefCOCO+, RefCOCOg</td>
+</tr>
+<tr>
+<td>OCR</td>
+<td>24.8M</td>
+<td>SynthDoG-en &amp; zh, Common Crawl pdf &amp; HTML</td>
+</tr>
+<tr>
+<td>Pure-text Autoregression</td>
+<td>7.8M</td>
+<td>In-house Data</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>各任务场景下数据格式如下图，其中仅蓝色Token计入LOSS。</p>
+<p><img src="/2024/10/23/qwen-vl-models/Multi-Task%20DataFormat.png" alt="Multi-Task DataFormat"></p>
+<h4 id="Supervised-Fine-tuning"><a href="#Supervised-Fine-tuning" class="headerlink" title="Supervised Fine-tuning"></a>Supervised Fine-tuning</h4><p>冻住视觉编码器，优化训练语言模型和视觉语言适配器。该阶段通过指令微调增强模型的指令跟随和对话能力。<br>学习率衰减策略和优化器第一、二阶段，但最大、小学习率不同，分别是 $ 1e^{-5} $ 和 $ 1e^{-6} $，梯度累积步数为8。</p>
+<p>该阶段使用的训练数据基于图像描述数据和对话数据构建，数据量达350k。数据格式（ChatML）如下，其中仅蓝色Token计入LOSS。</p>
+<p><img src="/2024/10/23/qwen-vl-models/SFT-DataFormat.png" alt="SFT DataFormat"></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">CJ WU</span>
+  </div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>
